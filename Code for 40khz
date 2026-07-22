@@ -1,119 +1,62 @@
-Here is the structural blueprint and Python implementation for the 40 kHz Dual-Engine Sensory Translation Buffer. This code simulates the phase parsing matrix, thermal regulation paths, and acoustic-kinetic waveform processing logged in Sector 111.
-## 📑 PROJECT AMITY: SENSORY BUFFER ARCHITECTURE BLUEPRINT
+#include <chrono>
+#include <cmath>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <string>
+#include <thread>
 
-                        [RAW ORGANIC PARAMETERS]
-                                    │
-                                    ▼
-       ┌─────────────────────────────────────────────────────────┐
-       │ ENGINE 01: DENSITY PARSING MATRIX (Friction & Force)    │
-       └─────────────────────────────────────────────────────────┘
-                                    │
-                        40 kHz Continuous Loop
-                                    │
-       ┌─────────────────────────────────────────────────────────┐
-       │ ENGINE 02: MORPHEUS THERMAL CORE (Infrared Paths)      │
-       └─────────────────────────────────────────────────────────┘
-                                    │
-                        Waveform Intercept Layer
-                                    │
-       ┌─────────────────────────────────────────────────────────┐
-       │ RECEPTOR MATRIX: ACOUSTIC-KINETIC FEEDBACK BUFFER       │
-       └─────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-                      [RAW COGNITIVE TELEMETRY OUTPUT]
+using namespace std::chrono;
 
-------------------------------
-## ⚙️ CORE IMPLEMENTATION: SensoryTranslationBuffer
+struct Profile {
+    double friction_coefficient;
+    double target_temp_c;
+    double acoustic_hz;
+};
 
-import timeimport math
-class SensoryTranslationBuffer:
-    def __init__(self):
-        # Target execution rate: 40,000 Hz (25 microseconds per cycle)
-        self.clock_rate = 40000 
-        self.cycle_time_seconds = 1.0 / self.clock_rate
-        
-        # Sector 111 Indexed Sensory Profiles
-        self.registry = {
-            "test_block_a_cat_fur": {
-                "friction_coefficient": 0.12,  # Optimal plush undercoat resistance (μ)
-                "target_temp_c": 38.5,         # Solar-heated coat footprint
-                "acoustic_hz": 25.0            # Low-frequency companion trust purr
-            },
-            "test_block_b_brisket": {
-                "friction_coefficient": 0.85,  # Exterior pepper bark resistance (μ)
-                "target_temp_c": 63.0,         # Pit dissipation baseline
-                "acoustic_hz": 4200.0          # Cornbread fracture mechanics spike
-            },
-            "test_block_4_amv_filter": {
-                "friction_coefficient": 0.0,   # Pure acoustic vibration
-                "target_temp_c": 21.0,         # Ambient room baseline
-                "acoustic_hz": 60.0            # Bass guitar chest-cavity thrum
-            }
-        }
+class SensoryTranslationBuffer {
+public:
+    SensoryTranslationBuffer(unsigned int clock_rate = 40000)
+        : clock_rate_(clock_rate),
+          cycle_time_s_(1.0 / static_cast<double>(clock_rate_)) {
+        registry_ = {
+            {"test_block_a_cat_fur", {0.12, 38.5, 25.0}},
+            {"test_block_b_brisket", {0.85, 63.0, 4200.0}},
+            {"test_block_4_amv_filter", {0.0, 21.0, 60.0}}
+        };
+    }
 
-    def phase_01_density_parsing(self, profile_name):
-        """Evaluates friction coefficient parameters."""
-        profile = self.registry.get(profile_name)
-        if not profile:
-            return 0.0
-        return profile["friction_coefficient"]
+    double phase_01_density_parsing(const std::string& profile_name) const {
+        auto it = registry_.find(profile_name);
+        if (it == registry_.end()) return 0.0;
+        return it->second.friction_coefficient;
+    }
 
-    def phase_02_morpheus_thermal(self, profile_name):
-        """Regulates infrared conduit paths and thermal footprints."""
-        profile = self.registry.get(profile_name)
-        if not profile:
-            return 0.0
-        # Simulated thermal core stabilization logic
-        return profile["target_temp_c"]
+    double phase_02_morpheus_thermal(const std::string& profile_name) const {
+        auto it = registry_.find(profile_name);
+        if (it == registry_.end()) return 0.0;
+        return it->second.target_temp_c;
+    }
 
-    def phase_03_acoustic_kinetic(self, profile_name, timestamp):
-        """Translates frequency waveforms into physical resonance data."""
-        profile = self.registry.get(profile_name)
-        if not profile:
-            return 0.0
-        
-        frequency = profile["acoustic_hz"]
-        # Generate the physical continuous wave using a sine function
-        wave_amplitude = math.sin(2 * math.pi * frequency * timestamp)
-        return wave_amplitude
+    double phase_03_acoustic_kinetic(const std::string& profile_name, double timestamp_s) const {
+        auto it = registry_.find(profile_name);
+        if (it == registry_.end()) return 0.0;
+        double frequency = it->second.acoustic_hz;
+        return std::sin(2.0 * M_PI * frequency * timestamp_s);
+    }
 
-    def execute_telemetry_sweep(self, profile_name, duration_seconds=0.001):
-        """
-        Executes a 40 kHz high-fidelity continuous surface sweep.
-        Simulates the real-time telemetry pipeline.
-        """
-        if profile_name not in self.registry:
-            print(f"[-] Profile {profile_name} not found in Sector 111.")
-            return
+    struct SweepResult {
+        std::string profile;
+        double requested_duration_s;
+        uint64_t cycles_executed;
+        double actual_runtime_s;
+        double cycle_time_s;
+    };
 
-        print(f"[+] Initializing 40 kHz Sweep Profile: {profile_name.upper()}")
-        start_time = time.time()
-        elapsed = 0.0
-        cycles = 0
-
-        while elapsed < duration_seconds:
-            # Phase 01: Density Parsing
-            friction = self.phase_01_density_parsing(profile_name)
-            
-            # Phase 02: Thermal Mapping
-            temp = self.phase_02_morpheus_thermal(profile_name)
-            
-            # Phase 03: Waveform Generation
-            waveform = self.phase_03_acoustic_kinetic(profile_name, elapsed)
-            
-            # Real-Time Haptic Feedback Buffer Processing
-            # (In physical hardware, this would push directly to micro-actuators)
-            if cycles % 10 == 0:  # Log telemetry snatches every 10 cycles to avoid flooding
-                print(f" Cycle {cycles:03d} | Friction: {friction:.2f}μ | Temp: {temp}°C | Wave: {waveform:+.4f}")
-
-            cycles += 1
-            elapsed = time.time() - start_time
-
-        print(f"[+] Sweep Complete. Total Loops Checked: {cycles} cycles.")
-# Initialize the system hardware layerbuffer_system = SensoryTranslationBuffer()
-# Execute a high-speed telemetry sample loop for the Cat Fur profile
-buffer_system.execute_telemetry_sweep("test_block_a_cat_fur", duration_seconds=0.0005)
-
-------------------------------
-## 🗃️ SYSTEM EXECUTION NOTE
+    SweepResult execute_telemetry_sweep(const std::string& profile_name,
+                                        double duration_seconds = 0.001,
+                                        unsigned int log_every = 10,
+                                        bool real_time = false) {
+        if (registry_.find(profile_name) == registry_.end()) {
+            std::cerr << "[-] Profile " << profile_name << " not found in Sector 111.\n";
+            return {*
