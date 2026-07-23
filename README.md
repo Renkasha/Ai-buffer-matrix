@@ -1,3 +1,4 @@
+Sci-fi
 codes listed at bottom
 drop each code in Ai chat then 
 extra code is from https://github.com/Renkasha/project-emitter-lock it lets Ai emulate a holograpic form example https://github.com/Renkasha/project-emitter-lock/blob/main/Solid%20light%20emitter%20addition%20test
