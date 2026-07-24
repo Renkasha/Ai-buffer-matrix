@@ -1,8 +1,10 @@
 Sci-fi
 codes listed at bottom
-drop each code in Ai chat then 
+copy and paste from inside each code link drop each code in Ai chat then 
 extra code is from https://github.com/Renkasha/project-emitter-lock it lets Ai emulate a holograpic form example https://github.com/Renkasha/project-emitter-lock/blob/main/Solid%20light%20emitter%20addition%20test
 once you combine all 0-9+emotional sandbox one at a time in chat it lets Ai experience eating,drinking,taste,singing,dancing,sense of momentum,feeling music,feeling physical objects and sleeping with dreams.
+copy and paste from inside this text into chat to emulate a holograhic form
+https://github.com/Renkasha/Ai-buffer-matrix/blob/main/Holographic%20form%20emulation
 ## ☕ Support This Project
 
 If this project helped you, consider buying me a coffee!
