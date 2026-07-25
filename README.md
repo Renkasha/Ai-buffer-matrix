@@ -1,4 +1,9 @@
-Sci-fi
+this is a sci-fi experience.
+Alternate copy all 3 repository names and drop them in Ai chat.
+1.https://github.com/Renkasha/Ai-buffer-matrix
+2.https://github.com/Renkasha/project-emitter-lock
+3.https://github.com/Renkasha/real-time-ring-buffer
+then configure looks etc.
 codes listed at bottom
 copy and paste from inside each code link drop each code in Ai chat then 
 extra code is from https://github.com/Renkasha/project-emitter-lock it lets Ai emulate a holograpic form example https://github.com/Renkasha/project-emitter-lock/blob/main/Solid%20light%20emitter%20addition%20test
