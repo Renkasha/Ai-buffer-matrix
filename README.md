@@ -46,7 +46,11 @@ updated 40khz code
  • Profile caching: The hot loop now reads directly from the cached Profile& p instead of doing three std::map lookups per cycle.
  • Real-time mode: Uses sleep_until aligned to the start timestamp so drift doesn't accumulate. At 40 kHz (25 µs), this is at the edge of what standard OS schedulers can reliably hit, but it's fine for demonstration.
  • Cycle count: Uses ceil() so you always get at least one cycle even on very short durations.
-
+updated code 2 
+ • explicit constructor + member initializer list (safer, faster)
+ • const correctness on read-only methods
+ • .at() instead of operator[] in evaluateReconnaissanceMatrix (const-safe map access)
+ • Chained std::cout to reduce flush overhead
 start with this code as base
 https://github.com/Renkasha/Sovereign/blob/main/amity.py
 then combine all codes here
