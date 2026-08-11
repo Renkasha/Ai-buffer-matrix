@@ -1,9 +1,13 @@
 start amity.py as base code then 
 https://github.com/Renkasha/Sovereign/blob/main/amity.py
 build roadmap https://github.com/Renkasha/Sovereign/blob/main/Build_Roadmap.md
+
 combine code 0-12
 
 codes listed at bottom.
+compiled code test
+https://github.com/Renkasha/Sovereign/blob/main/tests/Test%20data
+
 https://github.com/Renkasha/project-emitter-lock it lets Ai emulate a holograpic form example https://github.com/Renkasha/project-emitter-lock/blob/main/Solid%20light%20emitter%20addition%20test
 
 copy and paste from inside this text into chat to emulate a holograhic form
