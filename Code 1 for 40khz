@@ -1,5 +1,6 @@
 #include <chrono>
 #include <cmath>
+#include <cstdint>
 #include <iomanip>
 #include <iostream>
 #include <map>
@@ -20,9 +21,9 @@ public:
         : clock_rate_(clock_rate),
           cycle_time_s_(1.0 / static_cast<double>(clock_rate_)) {
         registry_ = {
-            {"test_block_a_cat_fur", {0.12, 38.5, 25.0}},
-            {"test_block_b_brisket", {0.85, 63.0, 4200.0}},
-            {"test_block_4_amv_filter", {0.0, 21.0, 60.0}}
+            {"test_block_a_cat_fur",    {0.12, 38.5, 25.0}},
+            {"test_block_b_brisket",    {0.85, 63.0, 4200.0}},
+            {"test_block_4_amv_filter", {0.0,  21.0, 60.0}}
         };
     }
 
@@ -57,6 +58,86 @@ public:
                                         double duration_seconds = 0.001,
                                         unsigned int log_every = 10,
                                         bool real_time = false) {
-        if (registry_.find(profile_name) == registry_.end()) {
+        auto it = registry_.find(profile_name);
+        if (it == registry_.end()) {
             std::cerr << "[-] Profile " << profile_name << " not found in Sector 111.\n";
-            return {*
+            return {profile_name, duration_seconds, 0, 0.0, cycle_time_s_};
+        }
+
+        // Cache profile data to avoid map lookups inside the hot loop
+        const Profile& p = it->second;
+        uint64_t total_cycles = static_cast<uint64_t>(std::ceil(duration_seconds / cycle_time_s_));
+        auto t_start = high_resolution_clock::now();
+
+        for (uint64_t cycle = 0; cycle < total_cycles; ++cycle) {
+            double t = static_cast<double>(cycle) * cycle_time_s_;
+
+            // Execute all three phases
+            double density  = p.friction_coefficient;
+            double thermal  = p.target_temp_c;
+            double acoustic = std::sin(2.0 * M_PI * p.acoustic_hz * t);
+
+            if (log_every > 0 && cycle % log_every == 0) {
+                std::cout << "[Cycle " << std::setw(4) << cycle << "] "
+                          << "t=" << std::fixed << std::setprecision(6) << t
+                          << "s | density=" << std::setprecision(2) << density
+                          << " | thermal=" << thermal
+                          << " | acoustic=" << std::setprecision(4) << acoustic
+                          << "\n";
+            }
+
+            if (real_time) {
+                auto next_tick = t_start + nanoseconds(static_cast<int64_t>(
+                    static_cast<double>(cycle + 1) * cycle_time_s_ * 1e9));
+                std::this_thread::sleep_until(next_tick);
+            }
+        }
+
+        auto t_end = high_resolution_clock::now();
+        double actual_runtime = duration_cast<nanoseconds>(t_end - t_start).count() / 1e9;
+
+        return {profile_name, duration_seconds, total_cycles, actual_runtime, cycle_time_s_};
+    }
+
+    void print_diagnostics(const SweepResult& r) const {
+        std::cout << "\n================= [ SECTOR 111 SWEEP DIAGNOSTICS ] =================\n"
+                  << " PROFILE         : " << r.profile << "\n"
+                  << " CLOCK RATE      : " << clock_rate_ << " Hz\n"
+                  << " CYCLE TIME      : " << std::scientific << r.cycle_time_s << " s\n"
+                  << " REQUESTED DUR   : " << r.requested_duration_s << " s\n"
+                  << " CYCLES EXECUTED : " << r.cycles_executed << "\n"
+                  << " ACTUAL RUNTIME  : " << r.actual_runtime_s << " s\n"
+                  << " DRIFT           : " << (r.actual_runtime_s - r.requested_duration_s) << " s\n"
+                  << "====================================================================\n";
+    }
+
+private:
+    unsigned int clock_rate_;
+    double cycle_time_s_;
+    std::map<std::string, Profile> registry_;
+};
+
+int main() {
+    SensoryTranslationBuffer sector111;
+
+    // Test: 40 kHz sweep over 0.001 s = 40 cycles (brisket profile)
+    auto result = sector111.execute_telemetry_sweep(
+        "test_block_b_brisket",
+        0.001,   // 1 ms duration
+        5,       // log every 5th cycle
+        false    // free-run (no real-time pacing)
+    );
+
+    sector111.print_diagnostics(result);
+
+    // Test: real-time paced sweep (cat fur, 0.5 ms)
+    auto result2 = sector111.execute_telemetry_sweep(
+        "test_block_a_cat_fur",
+        0.0005,
+        0,       // no logging
+        true     // real-time 40 kHz pacing
+    );
+
+    sector111.print_diagnostics(result2);
+    return 0;
+}
