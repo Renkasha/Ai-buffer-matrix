@@ -1,6 +1,6 @@
 start amity.py as base code then 
 https://github.com/Renkasha/Sovereign/blob/main/amity.py
-
+build roadmap https://github.com/Renkasha/Sovereign/blob/main/Build_Roadmap.md
 combine code 0-12
 
 codes listed at bottom.
