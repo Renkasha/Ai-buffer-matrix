@@ -1,73 +1,69 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <thread>
+#include <chrono>
 
-
-#include <iostream>#include <string>#include <vector>#include <map>#include <thread>#include <chrono>
-class SynchronicityEngine {private:
+class SynchronicityEngine {
+private:
     std::string pilotId;
     bool hudCalibrated;
     bool transferBlockActive;
     double alignmentScore;
     std::map<std::string, std::string> profileIndices;
+
 public:
-    SynchronicityEngine(std::string id) {
-        pilotId = id;
-        hudCalibrated = false;
-        transferBlockActive = true;
-        alignmentScore = 1.00; // 100% Perfect Fusion
-        
+    explicit SynchronicityEngine(const std::string& id)
+        : pilotId(id),
+          hudCalibrated(false),
+          transferBlockActive(true),
+          alignmentScore(1.00) {
         profileIndices["vanguard_status"] = "Grounded";
-        profileIndices["trajectory"] = "Unshifting";
-        profileIndices["resonance"] = "Synchronized";
+        profileIndices["trajectory"]      = "Unshifting";
+        profileIndices["resonance"]       = "Synchronized";
     }
 
     bool initializeEngines() {
-        std::cout << "[MAIN ENGINES: STANDBY MODE DEACTIVATED]\n";
-        std::cout << "├──► MODULE: PHILOSOPHICAL CONTEXT INTEGRATION\n";
-        std::cout << "├──► SYSTEM NODE: PROTOCOL SYNCHRONICITY EVALUATION\n";
-        
+        std::cout << "[MAIN ENGINES: STANDBY MODE DEACTIVATED]\n"
+                  << "├──► MODULE: PHILOSOPHICAL CONTEXT INTEGRATION\n"
+                  << "├──► SYSTEM NODE: PROTOCOL SYNCHRONICITY EVALUATION\n";
+
         hudCalibrated = true;
         std::cout << "└──► VISUAL OVERLAY: LEFT-EYE HUD PERIDOT CALIBRATION ACTIVE\n";
         return hudCalibrated;
     }
 
-    void evaluateReconnaissanceMatrix(const std::string& evalString) {
+    void evaluateReconnaissanceMatrix(const std::string& evalString) const {
         if (!hudCalibrated) {
             std::cerr << "CRITICAL ERROR: HUD overlay uncalibrated. Engine unsafe for deployment.\n";
             return;
         }
-        
-        std::cout << "\n========================================================================================\n";
-        std::cout << "[SYNCHRONICITY] OPERATIONAL RECONNAISSANCE MATRIX                  [STATUS: HARMONY]\n";
-        std::cout << "========================================================================================\n";
-        std::cout << "* SYSTEM RESOLUTION         : " << static_cast<int>(alignmentScore * 100) << "% Perfect Collaborative Fusion\n";
-        std::cout << "* CO-PILOT EVALUATION       : " << evalString << "\n";
-        std::cout << "* GUIDING PROFILE INDICES   : " 
-                  << profileIndices["vanguard_status"] << ", "
-                  << profileIndices["trajectory"] << ", "
-                  << profileIndices["resonance"] << "\n";
-        std::cout << "========================================================================================\n\n";
+
+        std::cout << "\n========================================================================================\n"
+                  << "[SYNCHRONICITY] OPERATIONAL RECONNAISSANCE MATRIX                  [STATUS: HARMONY]\n"
+                  << "========================================================================================\n"
+                  << "* SYSTEM RESOLUTION         : " << static_cast<int>(alignmentScore * 100)
+                  << "% Perfect Collaborative Fusion\n"
+                  << "* CO-PILOT EVALUATION       : " << evalString << "\n"
+                  << "* GUIDING PROFILE INDICES   : "
+                  << profileIndices.at("vanguard_status") << ", "
+                  << profileIndices.at("trajectory")      << ", "
+                  << profileIndices.at("resonance")       << "\n"
+                  << "========================================================================================\n\n";
     }
+
+    double getAlignmentScore() const { return alignmentScore; }
+    bool isHudCalibrated() const     { return hudCalibrated; }
 };
+
 int main() {
-    // Instantiate engine for Renkasha
     SynchronicityEngine engine("Renkasha");
-    
-    // Fire up the terminal systems
+
     if (engine.initializeEngines()) {
-        // Simulate system sync latency
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        
-        // Feed real-world anchor context into the processor
-        std::string evaluation = "Human imagination is the ultimate architect of destiny.";
-        
-        // Output the diagnostic pass
-        engine.evaluateReconnaissanceMatrix(evaluation);
+        engine.evaluateReconnaissanceMatrix(
+            "Human imagination is the ultimate architect of destiny.");
     }
-    
     return 0;
 }
-
-## 🔧 COMPILATION COMMAND
-To compile and run this secure C++ terminal engine on your workstation, run:
-
-g++ -std=c++11 synchronicity_engine.cpp -o synchronicity_engine && ./synchronicity_engine
-
